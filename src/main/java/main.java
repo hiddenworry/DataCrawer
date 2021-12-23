@@ -13,8 +13,12 @@ import java.io.IOException;
  */
 public class main {
     public static void main(String[] args) throws IOException {
-        String url = "https://www.facebook.com/profile.php?id=100012508003975";
-        webpage w = new webpage(url);
-        w.downloadAllImg();
+        String url = "https://www.pinterest.com/debratstanley/beautiful-scenes/";
+       webpage w = new webpage(url);
+       w.gethtml();
+   //   w.downloadAllImg(); 
+      w.getCss();
+      // w.downloadAllImg();
     }
 }
+
