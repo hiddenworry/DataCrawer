@@ -13,11 +13,11 @@ import java.io.IOException;
  */
 public class main {
     public static void main(String[] args) throws IOException {
-        String url = "https://www.pinterest.com/debratstanley/beautiful-scenes/";
+        String url = "https://shopee.vn/";
        webpage w = new webpage(url);
-       w.gethtml();
-   //   w.downloadAllImg(); 
-      w.getCss();
+       //w.gethtml();
+     w.downloadAllImg(); 
+     // w.getCss();
       // w.downloadAllImg();
     }
 }

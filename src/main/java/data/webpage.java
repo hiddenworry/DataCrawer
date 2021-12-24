@@ -3,8 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package data;
+
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,11 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -31,85 +35,101 @@ public class webpage {
 
     public webpage(String url) throws MalformedURLException, IOException {
         this.url = new URL(url);
-        this.doc = Jsoup.connect(url).timeout(1000000).get();
+        this.doc = Jsoup.connect(url).timeout(100000).get();
     }
 //// download img
-    public void downloadAllImg() throws IOException {
+
+    public void downloadAllImg() {
+        try {
+            getImgFromTag();
+        } catch (IOException ex) {
+            Logger.getLogger(webpage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        getImgFromlink();
+
+    }
+
+    private void getImgFromTag() throws IOException {
+        ArrayList<Element> imgsrc = new ArrayList();
         ArrayList<Element> imgList = new ArrayList();
-        ArrayList <Element> imgLink = new ArrayList();
+        ArrayList<Element> aList = new ArrayList<>();
         // get all possible img
         imgList = doc.getElementsByTag("img");
-        imgLink = doc.getElementsByTag("link");
+        aList = doc.getElementsByTag("a");
+        imgsrc = ArrayList
+        
         int name = 0;
         for (Element element : imgList) {
             String src = element.absUrl("src");
-            String filetype = src.substring(src.lastIndexOf("."));
-            System.out.println(name + filetype);
-           downloadFromsrc(src, String.valueOf(name), filetype );
-           name ++;
+            String filetype = new imagine().checkImg(src);
+
+            if (filetype != null) {
+                downloadFromsrc(src, String.valueOf("Tagimg" + name), filetype);
+                System.out.println("Succes");
+            }
+
+            name++;
 
         }
 
-  }
-    
-//    public void downloadAllImg(){
-//          ArrayList <Element> imgLink = new ArrayList();
-//          imgLink = doc.getElementsByTag("link");
-//          for (Element element : imgLink) {
-//            String href = element.attr("href");
-//            int name = 0;
-//            String filetype = href.substring(href.lastIndexOf("."));
-//            if (new imagine().IsImagine(filetype)){
-//                 downloadFromsrc(href, String.valueOf(name), filetype );
-//                 name++;
-//            }
-//        }
-//    
-//    }
-    
-    public void getCss() throws IOException{
+    }
+
+    private void getImgFromlink() {
+        ArrayList<Element> imgLink = new ArrayList();
+        try {
+            imgLink = doc.getElementsByTag("link");
+            for (Element element : imgLink) {
+                String href = element.attr("href");
+                int name = 0;
+                String filetype = new imagine().checkImg(href);
+
+                if (filetype != null) {
+                    downloadFromsrc(href, String.valueOf("LinkImg" + name), filetype);
+                }
+
+                name++;
+            }
+        } catch (Exception e) {
+            System.out.println("falied");
+        }
+
+    }
+
+    public void getCss() throws IOException {
         ArrayList<Element> cssLink = new ArrayList<>();
         ArrayList<Element> styleTags = new ArrayList<>();
-        cssLink = doc.getElementsByTag("link").attr("rel","stylesheet");
+        cssLink = doc.getElementsByTag("link").attr("rel", "stylesheet");
         styleTags = doc.getElementsByTag("style");
         FileWriter f = new FileWriter(outputdir + "webstyle.css");
         for (Element styleTag : styleTags) {
             String cssText = styleTag.toString();
-           // System.out.println(cssText);
+            // System.out.println(cssText);
             f.write(cssText);
         }
         f.close();
         int name = 0;
         for (Element link : cssLink) {
             String href = link.attr("href");
-           if (href.contains(".css") ){
-                downloadFromsrc(href, "css" + name , ".css");
+            if (href.contains(".css")) {
+                downloadFromsrc(href, "css" + name, ".css");
                 name++;
-           }
-        }  
+            }
+        }
     }
-    public void gethtml() throws UnsupportedEncodingException, FileNotFoundException, IOException{
+
+    public void gethtml() throws UnsupportedEncodingException, FileNotFoundException, IOException {
         String html = this.doc.html();
-       FileWriter f = new FileWriter(outputdir + "\\index.html");
-       f.write(html);
+        FileWriter f = new FileWriter(outputdir + "\\index.html");
+        f.write(html);
+        f.close();
     }
 
     private void downloadFromsrc(String src, String filenameOut, String type) {
-        try{
-            byte[] arr = new byte[2024];
-            URL Src = new URL(this.url + src);
-            this.is = Src.openStream();
-            this.os = new FileOutputStream(outputdir + filenameOut + type);
-            int length = 0;
-            while ((length = is.read(arr)) != -1) {
-                System.out.println(length);
-                os.write(arr, 0, length);       
-        }
-        is.close();
-        os.close();
-        } catch (Exception e){
-            e.printStackTrace();
+        try ( InputStream in = new URL(src).openStream()) {
+            Files.copy(in, Paths.get(outputdir + filenameOut + type));
+        } catch (Exception e) {
+            System.out.println("falied");
         }
     }
- 
+
 }
