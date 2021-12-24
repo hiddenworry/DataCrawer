@@ -31,7 +31,7 @@ public class webpage {
     private InputStream is = null;
     private OutputStream os = null;
     Document doc = null;
-    String outputdir = "E:\\Crawer-java-tool\\";
+    String outputdir = System.getProperty("user.dir") + "\\CrawerData\\";
 
     public webpage(String url) throws MalformedURLException, IOException {
         this.url = new URL(url);
@@ -50,14 +50,9 @@ public class webpage {
     }
 
     private void getImgFromTag() throws IOException {
-        ArrayList<Element> imgsrc = new ArrayList();
         ArrayList<Element> imgList = new ArrayList();
-        ArrayList<Element> aList = new ArrayList<>();
         // get all possible img
         imgList = doc.getElementsByTag("img");
-        aList = doc.getElementsByTag("a");
-        imgsrc = ArrayList
-        
         int name = 0;
         for (Element element : imgList) {
             String src = element.absUrl("src");
@@ -65,7 +60,7 @@ public class webpage {
 
             if (filetype != null) {
                 downloadFromsrc(src, String.valueOf("Tagimg" + name), filetype);
-                System.out.println("Succes");
+                System.out.println("Success");
             }
 
             name++;

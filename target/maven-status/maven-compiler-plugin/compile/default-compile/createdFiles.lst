@@ -1,4 +1,5 @@
 main.class
-Test.class
+version\CheckVersion.class
 data\imagine.class
 data\webpage.class
+help\Help.class
