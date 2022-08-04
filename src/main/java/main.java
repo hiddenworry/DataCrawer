@@ -1,6 +1,8 @@
 
-import data.webpage;
+import data.Webpage;
+
 import java.io.IOException;
+import java.util.Scanner;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -13,12 +15,47 @@ import java.io.IOException;
  */
 public class main {
     public static void main(String[] args) throws IOException {
-        String url = "https://ttphats.github.io/Skillcetera-Store/?fbclid=IwAR3A3P6i6sXuajurOGDpFuIvuP1WyCe-lcQWAmqjuG1V4sLMWphMif0B2Qc#";
-       webpage w = new webpage(url);
-       w.gethtml();
-     w.downloadAllImg(); 
-     w.getCss();
-      // w.downloadAllImg();
+        Scanner scanner = null;
+        int input = 0;
+        try {
+            while ( input != 4) {
+                System.out.println("==================================Input your website url============================");
+                scanner = new Scanner(System.in);
+                String url = scanner.nextLine();
+                if (url.isEmpty())
+                    throw new Exception("url is required");
+                Webpage page = new Webpage(url);
+                System.out.println("1. Get Html of website");
+                System.out.println("2. Get Css of website");
+                System.out.println("3. Get Image of website");
+                System.out.println("Other. Exit");
+                input = scanner.nextInt();
+
+                switch (input) {
+                    case 1:
+                        page.gethtml();
+                        System.out.println("Success");
+                        break;
+                    case 2:
+                        page.getCss();
+                        System.out.println("Success");
+                        break;
+                    case 3:
+                        page.downloadAllImg();
+                        System.out.println("Sucesss");
+                        break;
+                    case 4:
+                        break;
+
+                }
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+        finally {
+            scanner.close();
+        }
+
     }
 }
 

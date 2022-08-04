@@ -1,5 +1,5 @@
 main.class
 version\CheckVersion.class
-data\imagine.class
-data\webpage.class
+data\Image.class
+data\Webpage.class
 help\Help.class

@@ -25,7 +25,7 @@ import org.jsoup.nodes.Element;
  *
  * @author ADMIN
  */
-public class webpage {
+public class Webpage {
 
     private URL url;
     private InputStream is = null;
@@ -33,7 +33,7 @@ public class webpage {
     Document doc = null;
     String outputdir = System.getProperty("user.dir") + "\\CrawerData\\";
 
-    public webpage(String url) throws MalformedURLException, IOException {
+    public Webpage(String url) throws MalformedURLException, IOException {
         this.url = new URL(url);
         this.doc = Jsoup.connect(url).timeout(100000).get();
     }
@@ -42,21 +42,26 @@ public class webpage {
     public void downloadAllImg() {
         try {
             getImgFromTag();
-        } catch (IOException ex) {
-            Logger.getLogger(webpage.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            System.out.println("Cannot get all image tag from that link");
         }
+        try{
         getImgFromlink();
+        } catch (Exception ex){
+            System.out.println("Cannot get all image href from that link");
+        }
 
     }
 
     private void getImgFromTag() throws IOException {
+
         ArrayList<Element> imgList = new ArrayList();
         // get all possible img
         imgList = doc.getElementsByTag("img");
         int name = 0;
         for (Element element : imgList) {
             String src = element.absUrl("src");
-            String filetype = new imagine().checkImg(src);
+            String filetype = new Image().checkImg(src);
 
             if (filetype != null) {
                 downloadFromsrc(src, String.valueOf("Tagimg" + name), filetype);
@@ -76,7 +81,7 @@ public class webpage {
             for (Element element : imgLink) {
                 String href = element.attr("href");
                 int name = 0;
-                String filetype = new imagine().checkImg(href);
+                String filetype = new Image().checkImg(href);
 
                 if (filetype != null) {
                     downloadFromsrc(href, String.valueOf("LinkImg" + name), filetype);
@@ -91,6 +96,7 @@ public class webpage {
     }
 
     public void getCss() throws IOException {
+        try {
         ArrayList<Element> cssLink = new ArrayList<>();
         ArrayList<Element> styleTags = new ArrayList<>();
         cssLink = doc.getElementsByTag("link").attr("rel", "stylesheet");
@@ -109,6 +115,9 @@ public class webpage {
                 downloadFromsrc(href, "css" + name, ".css");
                 name++;
             }
+        }
+        } catch (Exception ex){
+            System.out.println("Cannot get Css from this link, please try another");
         }
     }
 

@@ -12,7 +12,7 @@ import java.util.HashSet;
  *
  * @author ADMIN
  */
-public class imagine {
+public class Image {
     private String format;
     private final String Imgformats[] = {".jpg", ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".ico", ".png", ".svg"}; 
     
